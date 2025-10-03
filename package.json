@@ -1,0 +1,35 @@
+{
+  "name": "saru-cli",
+  "version": "0.1.0-rc.1.alpha",
+  "description": "cli for saruCanvas",
+  "main": "bin/index.js",
+  "bin":{
+    "saru": "./bin/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bil-fis/saru-cli.git"
+  },
+  "keywords": [
+    "saru",
+    "sarucanvas",
+    "sarucli"
+  ],
+  "author": "林晚晚ss",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/bil-fis/saru-cli/issues"
+  },
+  "homepage": "https://github.com/bil-fis/saru-cli#readme",
+  "dependencies": {
+    "chalk": "^5.6.2",
+    "commander": "^14.0.1",
+    "fs-extra": "^11.3.2",
+    "inquirer": "^12.9.6",
+    "serve": "^14.2.5",
+    "simple-git": "^3.28.0"
+  }
+}
