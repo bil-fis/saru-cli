@@ -3,7 +3,7 @@
   "version": "0.1.0-rc.1.alpha",
   "description": "cli for saruCanvas",
   "main": "bin/index.js",
-  "bin":{
+  "bin": {
     "saru": "./bin/index.js"
   },
   "scripts": {
@@ -28,8 +28,8 @@
     "chalk": "^5.6.2",
     "commander": "^14.0.1",
     "fs-extra": "^11.3.2",
+    "http-server": "^14.1.1",
     "inquirer": "^12.9.6",
-    "serve": "^14.2.5",
     "simple-git": "^3.28.0"
   }
 }

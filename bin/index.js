@@ -14,94 +14,94 @@ const version = "0.1.0.rc.1.alpha"
 
 // 仓库源
 const repoSources = {
-    github: 'https://github.com/bil-fis/saruCanvas',
-    gitee: 'https://gitee.com/lww090627/saruCanvas'
-  }
+  github: 'https://github.com/bil-fis/saruCanvas',
+  gitee: 'https://gitee.com/lww090627/saruCanvas'
+}
 
 // 配置命令
 program
-    .version(version, '-v, --version', '显示版本信息')
-    .name('saru')
-    .description('saruCanvas 命令行工具')
+  .version(version, '-v, --version', '显示版本信息')
+  .name('saru')
+  .description('saruCanvas 命令行工具')
 
 // create
 program
-    .command('create')
-    .description('创建新的saruCanvas项目')
-    .action(async () => {
-        try {
-            // 询问
-            const answers = await inquirer.prompt([
-                {
-                    type: 'input',
-                    name: 'projectDir',
-                    message: 'Project Directory / 项目路径',
-                    default: '.'
-                },
-                {
-                    type: 'input',
-                    name: 'projectName',
-                    message: 'Name / 名称',
-                    default: 'sarucanvas'
-                }
-            ])
+  .command('create')
+  .description('创建新的saruCanvas项目')
+  .action(async () => {
+    try {
+      // 询问
+      const answers = await inquirer.prompt([
+        {
+          type: 'input',
+          name: 'projectDir',
+          message: 'Project Directory / 项目路径',
+          default: '.'
+        },
+        {
+          type: 'input',
+          name: 'projectName',
+          message: 'Name / 名称',
+          default: 'sarucanvas'
+        }
+      ])
 
-            const { projectDir, projectName } = answers;
-            const targetDir = path.resolve(projectDir);
+      const { projectDir, projectName } = answers;
+      const targetDir = path.resolve(projectDir);
 
-            // 确保目标目录存在
-            await fs.ensureDir(targetDir);
+      // 确保目标目录存在
+      await fs.ensureDir(targetDir);
 
-            // 创建基础目录结构
-            const dirs = [
-                'sarucanvas/css',
-                'sarucanvas/js',
-                'assets/image',
-                'assets/audio',
-                'assets/scenes'
-            ];
+      // 创建基础目录结构
+      const dirs = [
+        'sarucanvas/css',
+        'sarucanvas/js',
+        'assets/image',
+        'assets/audio',
+        'assets/scenes'
+      ];
 
-            for (const dir of dirs) {
-                await fs.ensureDir(path.join(targetDir, dir));
-            }
+      for (const dir of dirs) {
+        await fs.ensureDir(path.join(targetDir, dir));
+      }
 
-            // 克隆仓库
-//            const gitRepo = 'https://github.com/bil-fis/saruCanvas'
-            const tempCloneDir = path.join(os.tmpdir(), `sarucanvas-${Date.now()}`);
-            const git = simpleGit();
-            const {repoSource} = await inquirer.prompt([
-                {
-                    type:'list',
-                    name:'repoSource',
-                    message:'请选择下载源 / Select the download source',
-                    choices:[
-                        {name:'Gitee （国内源，速度快）','value':"gitee"},
-                        {name:'Github','value':"github"}
-                    ],
-                    default:'github'
-                }
-            ])
-            const gitRepo = repoSources[repoSource];
+      // 克隆仓库
+      //            const gitRepo = 'https://github.com/bil-fis/saruCanvas'
+      const tempCloneDir = path.join(os.tmpdir(), `sarucanvas-${Date.now()}`);
+      const git = simpleGit();
+      const { repoSource } = await inquirer.prompt([
+        {
+          type: 'list',
+          name: 'repoSource',
+          message: '请选择下载源 / Select the download source',
+          choices: [
+            { name: 'Gitee （国内源，速度快）', 'value': "gitee" },
+            { name: 'Github', 'value': "github" }
+          ],
+          default: 'github'
+        }
+      ])
+      const gitRepo = repoSources[repoSource];
 
-            console.log(chalk.yellow('Please Wait / 请稍后...'));
-            console.log('开始克隆仓库...');
-            await git.clone(gitRepo, tempCloneDir);
-            // 移动JS文件到目标目录
-            const jsFiles = await fs.readdir(tempCloneDir);
-            for (const file of jsFiles) {
-                if (file.endsWith('.js')) {
-                    await fs.move(
-                        path.join(tempCloneDir, file),
-                        path.join(targetDir, 'sarucanvas/js', file)
-                    );
-                }
-            }
+      console.log(chalk.yellow('Please Wait / 请稍后...'));
+      console.log('开始克隆仓库...');
+      await git.clone(gitRepo, tempCloneDir);
+      // 移动JS文件到目标目录
+      const jsFiles = await fs.readdir(tempCloneDir);
+      for (const file of jsFiles) {
+        if (file.endsWith('.js')) {
+          await fs.move(
+            path.join(tempCloneDir, file),
+            path.join(targetDir, 'sarucanvas/js', file)
+          );
+        }
+      }
 
-            // 清理临时目录
-            await fs.remove(tempCloneDir);
+      // 清理临时目录
+      await fs.remove(tempCloneDir);
 
-            // 创建index.html
-            const indexHtmlContent = `<!DOCTYPE html>
+      // 创建index.html
+      const indexHtmlContent = `<!DOCTYPE html>
 <html>
 <head>
   <title>${projectName}</title>
@@ -110,29 +110,29 @@ program
 <body></body>
 </html>`;
 
-            await fs.writeFile(
-                path.join(targetDir, 'index.html'),
-                indexHtmlContent
-            );
+      await fs.writeFile(
+        path.join(targetDir, 'index.html'),
+        indexHtmlContent
+      );
 
-            // 创建saru.json
-            const saruJsonContent = {
-                name: projectName,
-                author: os.userInfo().username,
-                port: 2017
-            };
+      // 创建saru.json
+      const saruJsonContent = {
+        name: projectName,
+        author: os.userInfo().username,
+        port: 2017
+      };
 
-            await fs.writeFile(
-                path.join(targetDir, 'saru.json'),
-                JSON.stringify(saruJsonContent, null, 2)
-            );
+      await fs.writeFile(
+        path.join(targetDir, 'saru.json'),
+        JSON.stringify(saruJsonContent, null, 2)
+      );
 
-            console.log(chalk.green('Finished / 安装完成'));
-        } catch (error) {
-            console.error(chalk.red(`错误: ${error.message}`));
-            process.exit(1);
-        }
-    })
+      console.log(chalk.green('Finished / 安装完成'));
+    } catch (error) {
+      console.error(chalk.red(`错误: ${error.message}`));
+      process.exit(1);
+    }
+  })
 
 // run 命令
 program
@@ -152,17 +152,22 @@ program
       const serverPort = port || saruConfig.port || 2017;
 
       // 启动服务器
-      console.log(chalk.blue(`启动服务器，端口: ${serverPort}`));
-      const serve = require('serve');
-      const server = serve('.', {
-        port: serverPort,
-        open: false
+      console.log(chalk.blueBright(`启动服务器，端口: ${serverPort}`));
+      // 使用 http-server 替代
+      const httpServer = require('http-server');
+
+      // 修改 run 命令中的服务器启动部分
+      const server = httpServer.createServer({
+        root: '.',
+        cache: -1
+      });
+      server.listen(serverPort, () => {
+        console.log(chalk.green(`服务器运行在 http://localhost:${serverPort}`));
       });
 
       // 监听退出信号
       process.on('SIGINT', () => {
-        server.stop();
-        console.log(chalk.blue('服务器已停止'));
+        console.log(chalk.blueBright('服务器已停止'));
         process.exit(0);
       });
     } catch (error) {
